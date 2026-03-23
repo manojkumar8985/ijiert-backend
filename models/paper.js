@@ -6,6 +6,11 @@ const paperSchema = new mongoose.Schema({
   area: String,
   paperId: String,
   pages: String,
+  abstract: String,
+  journalName: String,
+  volume: String,
+  issue: String,
+  publicationDate: String,
   pdf: String,
 }, { timestamps: true });
 

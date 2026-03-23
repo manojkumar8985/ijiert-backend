@@ -1,5 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
+dotenv.config();
+const path = require("path");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const transporter = require("./mail");
@@ -10,7 +12,7 @@ const submissionRoutes = require("./routes/submissionRoutes");
 
 
 
-dotenv.config();
+// dotenv.config(); // Moved to top
 connectDB();
 
 const app = express();
@@ -21,6 +23,7 @@ app.use(express.json());
 app.use("/api/papers", paperRoutes);
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/submissions", submissionRoutes);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.get("/", (req, res) => {
   res.send("API Running...");

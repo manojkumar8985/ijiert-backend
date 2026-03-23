@@ -1,16 +1,22 @@
-const fs = require("fs");
-const path = require("path");
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
 
-const uploadDir = path.join(__dirname, "..", "uploads");
-fs.mkdirSync(uploadDir, { recursive: true });
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, uploadDir);
-  },
-  filename(req, file, cb) {
-    cb(null, `${Date.now()}-${path.basename(file.originalname)}`);
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "research_papers",
+    resource_type: "raw", // the only type that works consistently across free Cloudinary accounts for un-transformed storage
+    public_id: (req, file) => {
+      const sanitized = file.originalname.split(".")[0].replace(/[^a-zA-Z0-9]/g, "_");
+      return `${Date.now()}-${sanitized}.pdf`;
+    },
   },
 });
 
