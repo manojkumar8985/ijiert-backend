@@ -18,11 +18,12 @@ connectDB();
 const app = express();
 
 app.use(cors({
-  origin: "https://ijiert.com",
+  origin: ["https://ijiert.com","https://www.ijiert.com"],
   credentials: true
 }));
 
-app.use(express.json());
+app.use(express.json({ limit: "20mb" }));
+app.use(express.urlencoded({ limit: "20mb", extended: true }));
 
 app.use("/api/papers", paperRoutes);
 app.use("/api/auth", require("./routes/authRoutes"));
