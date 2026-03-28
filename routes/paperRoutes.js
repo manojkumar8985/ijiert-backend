@@ -75,4 +75,31 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+// Update Paper
+router.put("/:id", upload.single("pdf"), async (req, res) => {
+  try {
+    const { title, authors, abstract, issue, publicationDate } = req.body;
+    const updateData = {
+      title,
+      authors,
+      abstract,
+      issue,
+      publicationDate,
+    };
+
+    if (req.file) {
+      updateData.pdf = req.file.path;
+    }
+
+    const paper = await Paper.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    if (!paper) {
+      return res.status(404).json({ error: "Paper not found" });
+    }
+    res.json(paper);
+  } catch (error) {
+    console.error("Error updating paper:", error);
+    res.status(500).json({ error: "Failed to update paper" });
+  }
+});
+
 module.exports = router;
